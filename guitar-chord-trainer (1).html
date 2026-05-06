@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎸 和弦練習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #0f0f0d;
+  --bg1:     #161614;
+  --bg2:     #1d1d1a;
+  --bg3:     #252521;
+  --bg4:     #2e2e29;
+  --line:    rgba(255,255,255,0.07);
+  --line2:   rgba(255,255,255,0.13);
+  --text:    #e8e6de;
+  --text2:   #8c8a80;
+  --text3:   #525049;
+  --gold:    #c9933a;
+  --gold2:   #e8b05a;
+  --gold-dim:#1e1609;
+  --teal:    #3d9e84;
+  --teal2:   #6dcfb0;
+  --teal-dim:#071a14;
+  --red:     #c0452a;
+  --red-dim: #1f0a06;
+  --r:6px; --r-lg:12px; --r-xl:18px;
+}
+html { font-size: 16px; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1rem 5rem;
+}
+#app { width: 100%; max-width: 600px; }
+
+.app-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.header-left h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 30px; font-weight: 400;
+  letter-spacing: -0.5px; line-height: 1;
+}
+.header-left h1 em { font-style: italic; color: var(--gold2); }
+.header-left p { font-size: 11px; color: var(--text3); margin-top: 5px; letter-spacing: 0.8px; text-transform: uppercase; }
+.header-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); margin-bottom: 4px; }
+
+.tab-row {
+  display: flex;
+  background: var(--bg2);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-lg);
+  padding: 4px; gap: 2px;
+  width: fit-content;
+  margin-bottom: 1.5rem;
+}
+.tab {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 7px 18px;
+  border-radius: var(--r);
+  background: transparent;
+  color: var(--text3);
+  border: none; cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.tab:hover { color: var(--text2); }
+.tab.active { background: var(--bg4); color: var(--text); border: 1px solid var(--line2); }
+
+.settings-panel {
+  background: var(--bg1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  padding: 1.25rem 1.25rem 1rem;
+  margin-bottom: 1rem;
+}
+.ctrl-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.ctrl-row:last-child { margin-bottom: 0; }
+.ctrl-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; min-width: 52px; }
+.pill-group { display: flex; gap: 5px; flex-wrap: wrap; }
+.pill {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 4px 13px; border-radius: 99px;
+  border: 1px solid var(--line2);
+  background: var(--bg2); color: var(--text2);
+  cursor: pointer; transition: all 0.15s;
+}
+.pill:hover { border-color: var(--text3); color: var(--text); }
+.pill.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold2); }
+
+.seg-group { display: flex; background: var(--bg2); border: 1px solid var(--line2); border-radius: var(--r); overflow: hidden; }
+.seg {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500;
+  padding: 5px 13px;
+  background: transparent; color: var(--text3);
+  border: none; cursor: pointer; transition: all 0.15s;
+}
+.seg:hover { color: var(--text2); }
+.seg.active { background: var(--bg4); color: var(--text); }
+
+.slider-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text3); flex: 1; }
+input[type=range] {
+  -webkit-appearance: none;
+  flex: 1; max-width: 140px; height: 3px;
+  border-radius: 99px; background: var(--bg4);
+  outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--gold); cursor: pointer;
+  border: 2px solid var(--bg1);
+}
+.mono-val { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--text2); min-width: 36px; }
+
+.divider { height: 1px; background: var(--line); margin: 0.875rem 0; }
+
+.status-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.status-txt { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; }
+
+.history-strip { display: flex; gap: 5px; flex-wrap: wrap; min-height: 24px; margin-bottom: 0.75rem; }
+.hbadge {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 2px 9px; border-radius: 99px;
+  background: var(--bg2); color: var(--text3); border: 1px solid var(--line);
+}
+.hbadge.cur { background: var(--gold-dim); color: var(--gold2); border-color: var(--gold); }
+
+.stage {
+  background: var(--bg1);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-xl);
+  padding: 2rem 1.5rem;
+  margin-bottom: 1rem;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 260px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s;
+}
+.stage::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,147,58,0.06), transparent 70%);
+  pointer-events: none;
+}
+.stage.flash { animation: stageFlash 0.35s ease; }
+@keyframes stageFlash {
+  0%,100% { border-color: var(--line2); }
+  50% { border-color: var(--gold); box-shadow: 0 0 24px rgba(201,147,58,0.08); }
+}
+.chord-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 64px; font-weight: 400;
+  letter-spacing: -3px; line-height: 1;
+  margin-bottom: 4px;
+}
+.chord-type { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1.5rem; }
+.idle-msg { font-size: 14px; color: var(--text3); }
+
+.cring { position: absolute; top: 14px; right: 16px; width: 40px; height: 40px; }
+.cring svg { width: 40px; height: 40px; transform: rotate(-90deg); }
+.rb { fill: none; stroke: var(--bg4); stroke-width: 3; }
+.rf { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+.cring-txt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--text2); }
+
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 9px 18px; border-radius: var(--r);
+  border: 1px solid var(--line2);
+  background: var(--bg2); color: var(--text2);
+  cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn:hover { background: var(--bg3); color: var(--text); }
+.btn:active { transform: scale(0.97); }
+.btn.gold { background: var(--gold); color: #0f0f0d; border-color: var(--gold); font-weight: 600; }
+.btn.gold:hover { background: var(--gold2); border-color: var(--gold2); }
+.btn.teal { background: var(--teal-dim); color: var(--teal2); border-color: var(--teal); font-weight: 600; }
+.btn.teal:hover { background: var(--teal); color: #0f0f0d; }
+.btn.red { background: var(--red-dim); color: #e07060; border-color: var(--red); }
+.btn.red:hover { background: var(--red); color: var(--text); }
+
+.score-row { display: flex; gap: 10px; margin-bottom: 1rem; }
+.score-card { flex: 1; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 0.875rem 1rem; text-align: center; }
+.sc-label { font-size: 10px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.sc-val { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; color: var(--text2); }
+.score-card.gold-c .sc-val { color: var(--gold2); }
+.score-card.teal-c .sc-val { color: var(--teal2); }
+
+.mic-row { display: flex; align-items: center; gap: 10px; }
+.mic-track { flex: 1; height: 4px; background: var(--bg4); border-radius: 99px; overflow: hidden; }
+.mic-fill { height: 100%; width: 0%; background: var(--teal); border-radius: 99px; transition: width 0.05s; }
+.mic-status { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
+.mic-status.ok { color: var(--teal2); }
+.mic-status.err { color: #e07060; }
+.hint { font-size: 11px; color: var(--text3); letter-spacing: 0.2px; }
+
+.result-overlay { position: absolute; inset: 0; background: var(--bg1); border-radius: var(--r-xl); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+.result-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--gold2); }
+.result-sub { font-size: 13px; color: var(--text3); }
+.result-stats { display: flex; gap: 28px; margin-top: 14px; }
+.rs { text-align: center; }
+.rs-val { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; color: var(--teal2); }
+.rs-lab { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 3px; }
+
+@media (max-width: 480px) {
+  .chord-name { font-size: 50px; }
+  .sc-val { font-size: 20px; }
+  .header-left h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="app-header">
+    <div class="header-left">
+      <h1>Chord <em>Practice</em></h1>
+      <p>吉他和弦練習工具</p>
+    </div>
+    <div class="header-dot"></div>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab active" onclick="switchTab('normal')"><i class="ti ti-music"></i> 一般練習</button>
+    <button class="tab" onclick="switchTab('race')"><i class="ti ti-bolt"></i> 搶秒模式</button>
+  </div>
+
+  <!-- 一般練習 -->
+  <div id="section-normal">
+    <div class="settings-panel">
+      <div class="ctrl-row">
+        <span class="ctrl-label">程度</span>
+        <div class="pill-group" id="level-btns">
+          <button class="pill active" onclick="setLevel('beginner',this)">初級</button>
+          <button class="pill" onclick="setLevel('intermediate',this)">中級</button>
+          <button class="pill" onclick="setLevel('advanced',this)">進階</button>
+        </div>
+      </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">換弦</span>
+        <div class="seg-group">
+          <button class="seg active" id="mode-auto" onclick="setMode('auto')">自動</button>
+          <button class="seg" id="mode-manual" onclick="setMode('manual')">手動</button>
+          <button class="seg" id="mode-both" onclick="setMode('both')">兩種</button>
+        </div>
+      </div>
+      <div class="ctrl-row" id="timer-row">
+        <span class="ctrl-label">間隔</span>
+        <div class="slider-row">
+          <input type="range" min="3" max="15" value="6" step="1" id="interval-slider" oninput="updateInterval(this.value)">
+          <span class="mono-val" id="interval-val">6s</span>
+        </div>
+      </div>
+    </div>
+    <div class="status-bar"><span class="status-txt" id="n-status">選擇程度後開始</span></div>
+    <div class="history-strip" id="n-history"></div>
+    <div class="stage" id="n-stage"><div class="idle-msg">按下「開始練習」🎵</div></div>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn gold" id="n-start" onclick="nStart()"><i class="ti ti-player-play"></i> 開始練習</button>
+      <button class="btn" id="n-next" onclick="nNext()" style="display:none;"><i class="ti ti-arrow-right"></i> 下一個</button>
+      <button class="btn red" id="n-stop" onclick="nStop()" style="display:none;"><i class="ti ti-square"></i> 停止</button>
+      <button class="btn" id="n-play" onclick="nPlaySound()" style="display:none;"><i class="ti ti-volume"></i> 播放</button>
+    </div>
+  </div>
+
+  <!-- 搶秒模式 -->
+  <div id="section-race" style="display:none;">
+    <div class="settings-panel">
+      <div class="ctrl-row">
+        <span class="ctrl-label">程度</span>
+        <div class="pill-group" id="r-level-btns">
+          <button class="pill active" onclick="setRaceLevel('beginner',this)">初級</button>
+          <button class="pill" onclick="setRaceLevel('intermediate',this)">中級</button>
+          <button class="pill" onclick="setRaceLevel('advanced',this)">進階</button>
+        </div>
+      </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">總數</span>
+        <div class="pill-group" id="r-count-btns">
+          <button class="pill active" onclick="setRaceCount(5,this)">5</button>
+          <button class="pill" onclick="setRaceCount(10,this)">10</button>
+          <button class="pill" onclick="setRaceCount(15,this)">15</button>
+          <button class="pill" onclick="setRaceCount(20,this)">20</button>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="ctrl-row mic-row">
+        <i class="ti ti-microphone" style="font-size:14px;color:var(--text3);flex-shrink:0;"></i>
+        <div class="mic-track"><div class="mic-fill" id="mic-bar"></div></div>
+        <span class="mic-status" id="mic-status">未連接</span>
+        <button class="btn" style="padding:5px 12px;font-size:12px;" onclick="toggleMic()"><span id="mic-btn-txt">連接</span></button>
+      </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label">靈敏度</span>
+        <div class="slider-row">
+          <input type="range" min="5" max="80" value="25" step="1" id="thresh-slider" oninput="updateThresh(this.value)" style="max-width:120px;">
+          <span class="mono-val" id="thresh-val">25</span>
+        </div>
+      </div>
+      <p class="hint">撥弦音量超過靈敏度值 → 自動換下一個和弦並計秒</p>
+    </div>
+
+    <div class="score-row">
+      <div class="score-card gold-c"><div class="sc-label">目前時間</div><div class="sc-val" id="r-timer">0.0</div></div>
+      <div class="score-card"><div class="sc-label">進度</div><div class="sc-val" id="r-progress">0 / 5</div></div>
+      <div class="score-card teal-c"><div class="sc-label">最佳成績</div><div class="sc-val" id="r-best">--</div></div>
+    </div>
+
+    <div class="status-bar"><span class="status-txt" id="r-status">連接麥克風後開始</span></div>
+    <div class="history-strip" id="r-history"></div>
+    <div class="stage" id="r-stage"><div class="idle-msg">⚡ 準備好了嗎？</div></div>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn teal" id="r-start" onclick="rStart()"><i class="ti ti-bolt"></i> 開始搶秒</button>
+      <button class="btn red" id="r-stop" onclick="rStop()" style="display:none;"><i class="ti ti-square"></i> 停止</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+<script>
+const CHORDS = {
+  beginner: [
+    {name:'Em',type:'minor open',fingers:['0','2','2','0','0','0']},
+    {name:'Am',type:'minor open',fingers:['X','0','2','2','1','0']},
+    {name:'C', type:'major open',fingers:['X','3','2','0','1','0']},
+    {name:'G', type:'major open',fingers:['3','2','0','0','0','3']},
+    {name:'D', type:'major open',fingers:['X','X','0','2','3','2']},
+    {name:'E', type:'major open',fingers:['0','2','2','1','0','0']},
+  ],
+  intermediate: [
+    {name:'Dm',   type:'minor open',  fingers:['X','X','0','2','3','1']},
+    {name:'A',    type:'major open',  fingers:['X','0','2','2','2','0']},
+    {name:'F',    type:'major barre', fingers:['1','1','2','3','3','1']},
+    {name:'Bm',   type:'minor barre', fingers:['X','2','4','4','3','2']},
+    {name:'G7',   type:'dominant 7th',fingers:['3','2','0','0','0','1']},
+    {name:'Cadd9',type:'add 9',       fingers:['X','3','2','0','3','0']},
+  ],
+  advanced: [
+    {name:'Cmaj7',type:'major 7th',   fingers:['X','3','2','0','0','0']},
+    {name:'Am7',  type:'minor 7th',   fingers:['X','0','2','0','1','0']},
+    {name:'Dm7',  type:'minor 7th',   fingers:['X','X','0','2','1','1']},
+    {name:'E7',   type:'dominant 7th',fingers:['0','2','0','1','0','0']},
+    {name:'B7',   type:'dominant 7th',fingers:['X','2','1','2','0','2']},
+    {name:'G#m',  type:'minor barre', fingers:['4','6','6','5','4','4']},
+  ]
+};
+const CHORD_NOTES = {
+  Em:['E2','B2','E3','G3','B3','E4'],Am:['A2','E3','A3','C4','E4'],
+  C:['C3','E3','G3','C4','E4'],G:['G2','B2','D3','G3','B3','G4'],
+  D:['D3','A3','D4','F#4'],E:['E2','B2','E3','G#3','B3','E4'],
+  Dm:['D3','A3','D4','F4'],A:['A2','E3','A3','C#4','E4'],
+  F:['F2','C3','F3','A3','C4','F4'],Bm:['B2','F#3','B3','D4','F#4'],
+  G7:['G2','B2','D3','G3','B3','F4'],Cadd9:['C3','E3','G3','D4','E4'],
+  Cmaj7:['C3','E3','G3','B3','E4'],Am7:['A2','E3','G3','C4','E4'],
+  Dm7:['D3','A3','C4','F4'],E7:['E2','B2','D3','G#3','B3','E4'],
+  B7:['B2','A3','D4','F#4'],'G#m':['G#2','D#3','G#3','B3','D#4'],
+};
+
+let synth=null,level='beginner',mode='auto',intervalSec=6;
+let nRunning=false,nCurIdx=-1,nHistory=[],nCountdown=0,nCdTimer=null;
+let rLevel='beginner',rCount=5,rRunning=false,rCurIdx=-1,rHistory=[],rSequence=[];
+let rStartTime=0,rTimerInt=null,rBest=null,rDone=false;
+let micStream=null,audioCtx=null,analyser=null,micConnected=false;
+let micBarInt=null,threshold=25,rCooldown=false;
+
+function switchTab(t){
+  document.getElementById('section-normal').style.display=t==='normal'?'':'none';
+  document.getElementById('section-race').style.display=t==='race'?'':'none';
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',(t==='normal'&&i===0)||(t==='race'&&i===1)));
+}
+
+function initSynth(){
+  if(synth)return;
+  const rev=new Tone.Reverb({decay:3,wet:0.4}).toDestination();
+  synth=new Tone.PolySynth(Tone.Synth,{
+    oscillator:{type:'triangle'},
+    envelope:{attack:0.015,decay:0.4,sustain:0.35,release:3},
+    volume:-10
+  }).connect(rev);
+}
+
+function playChord(name){
+  initSynth();
+  const notes=CHORD_NOTES[name]||['C3','E3','G3'],now=Tone.now();
+  notes.forEach((n,i)=>synth.triggerAttackRelease(n,'2n',now+i*0.065));
+}
+
+function drawDiagram(chord){
+  const s=chord.fingers,W=128,rows=5,sx=18,sy=30,cw=18,rh=16;
+  let mf=Infinity;
+  s.forEach(f=>{const n=parseInt(f);if(!isNaN(n)&&n>0)mf=Math.min(mf,n);});
+  const off=(mf>3)?mf-1:0,fl=off>0?`${off+1}fr`:'';
+  let svg=`<svg width="${W}" height="${rows*rh+sy+10}" viewBox="0 0 ${W} ${rows*rh+sy+10}">`;
+  for(let r=0;r<=rows;r++){
+    const y=sy+r*rh,sw=r===0?'1.5':'0.5';
+    svg+=`<line x1="${sx}" y1="${y}" x2="${sx+5*cw}" y2="${y}" stroke="#e8e6de" stroke-width="${sw}" opacity="${r===0?0.2:0.08}"/>`;
+  }
+  for(let c=0;c<6;c++){
+    const x=sx+c*cw;
+    svg+=`<line x1="${x}" y1="${sy}" x2="${x}" y2="${sy+rows*rh}" stroke="#e8e6de" stroke-width="0.5" opacity="0.08"/>`;
+  }
+  if(fl)svg+=`<text x="${sx+5*cw+5}" y="${sy+rh}" font-size="9" fill="#525049" font-family="DM Mono">${fl}</text>`;
+  s.forEach((f,i)=>{
+    const x=sx+i*cw;
+    if(f==='X'){svg+=`<text x="${x}" y="${sy-8}" text-anchor="middle" font-size="11" fill="#525049">×</text>`;}
+    else if(f==='0'){svg+=`<circle cx="${x}" cy="${sy-8}" r="4.5" fill="none" stroke="#8c8a80" stroke-width="1.2"/>`;}
+    else{
+      const fret=parseInt(f)-off,cy=sy+(fret-0.5)*rh;
+      svg+=`<circle cx="${x}" cy="${cy}" r="7" fill="#c9933a"/>`;
+      svg+=`<text x="${x}" y="${cy+4}" text-anchor="middle" font-size="9" fill="#0f0f0d" font-family="DM Mono" font-weight="500">${f}</text>`;
+    }
+  });
+  return svg+'</svg>';
+}
+
+/* NORMAL */
+function setLevel(l,el){if(nRunning)nStop();level=l;document.querySelectorAll('#level-btns .pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function setMode(m){mode=m;['auto','manual','both'].forEach(id=>document.getElementById('mode-'+id).classList.toggle('active',id===m));document.getElementById('timer-row').style.display=(m==='manual')?'none':'flex';}
+function updateInterval(v){intervalSec=parseInt(v);document.getElementById('interval-val').textContent=v+'s';}
+
+function nPickNext(){const pool=CHORDS[level];let idx;do{idx=Math.floor(Math.random()*pool.length);}while(idx===nCurIdx&&pool.length>1);nCurIdx=idx;return pool[idx];}
+
+function nRenderStage(chord,showCd){
+  const circ=2*Math.PI*17;
+  const cd=showCd?`<div class="cring"><svg viewBox="0 0 40 40"><circle class="rb" cx="20" cy="20" r="17"/><circle class="rf" id="ring" cx="20" cy="20" r="17" stroke-dasharray="${circ}" stroke-dashoffset="${circ}"/></svg><div class="cring-txt" id="cd-txt">${nCountdown}</div></div>`:'';
+  document.getElementById('n-stage').innerHTML=`${cd}<div class="chord-name">${chord.name}</div><div class="chord-type">${chord.type}</div>${drawDiagram(chord)}`;
+}
+
+function nRenderHistory(){document.getElementById('n-history').innerHTML=nHistory.slice(-10).map((c,i,a)=>`<span class="hbadge ${i===a.length-1?'cur':''}">${c}</span>`).join('');}
+
+function nUpdateRing(){
+  const ring=document.getElementById('ring'),txt=document.getElementById('cd-txt');
+  if(!ring||!txt)return;
+  const circ=2*Math.PI*17;
+  ring.style.strokeDashoffset=circ*(1-nCountdown/intervalSec);
+  txt.textContent=nCountdown;
+  ring.style.stroke=nCountdown<=2?'var(--gold)':'var(--teal)';
+}
+
+function nNext(){
+  if(nCdTimer){clearInterval(nCdTimer);nCdTimer=null;}
+  const chord=nPickNext();
+  nHistory.push(chord.name);nRenderHistory();
+  nRenderStage(chord,mode!=='manual');
+  playChord(chord.name);
+  if(mode!=='manual'){
+    nCountdown=intervalSec;nUpdateRing();
+    nCdTimer=setInterval(()=>{nCountdown--;nUpdateRing();if(nCountdown<=0){clearInterval(nCdTimer);nCdTimer=null;nNext();}},1000);
+  }
+}
+
+function nStart(){
+  nRunning=true;nHistory=[];nCurIdx=-1;
+  document.getElementById('n-start').style.display='none';
+  document.getElementById('n-stop').style.display='';
+  document.getElementById('n-play').style.display='';
+  if(mode!=='auto')document.getElementById('n-next').style.display='';
+  document.getElementById('n-status').textContent='練習中 — 聽聲音，準備好再換';
+  nNext();
+}
+
+function nStop(){
+  nRunning=false;if(nCdTimer){clearInterval(nCdTimer);nCdTimer=null;}
+  document.getElementById('n-start').style.display='';
+  ['n-stop','n-next','n-play'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('n-status').textContent='選擇程度後開始';
+  document.getElementById('n-stage').innerHTML='<div class="idle-msg">按下「開始練習」🎵</div>';
+  nHistory=[];nRenderHistory();
+}
+
+function nPlaySound(){if(nCurIdx<0)return;playChord(CHORDS[level][nCurIdx].name);}
+
+/* RACE */
+function setRaceLevel(l,el){rLevel=l;document.querySelectorAll('#r-level-btns .pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function setRaceCount(n,el){rCount=n;document.querySelectorAll('#r-count-btns .pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('r-progress').textContent='0 / '+n;}
+function updateThresh(v){threshold=parseInt(v);document.getElementById('thresh-val').textContent=v;}
+
+async function toggleMic(){
+  if(micConnected){disconnectMic();return;}
+  try{
+    micStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    analyser=audioCtx.createAnalyser();analyser.fftSize=256;
+    audioCtx.createMediaStreamSource(micStream).connect(analyser);
+    micConnected=true;
+    document.getElementById('mic-btn-txt').textContent='中斷';
+    document.getElementById('mic-status').textContent='已連接';
+    document.getElementById('mic-status').className='mic-status ok';
+    startMicBar();
+  }catch(e){
+    document.getElementById('mic-status').textContent='存取失敗';
+    document.getElementById('mic-status').className='mic-status err';
+  }
+}
+
+function disconnectMic(){
+  if(micStream)micStream.getTracks().forEach(t=>t.stop());
+  if(audioCtx)audioCtx.close();
+  micStream=null;audioCtx=null;analyser=null;micConnected=false;stopMicBar();
+  document.getElementById('mic-btn-txt').textContent='連接';
+  document.getElementById('mic-status').textContent='未連接';
+  document.getElementById('mic-status').className='mic-status';
+  document.getElementById('mic-bar').style.width='0%';
+}
+
+function getMicVol(){
+  if(!analyser)return 0;
+  const d=new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(d);
+  return d.reduce((a,v)=>a+v,0)/d.length;
+}
+
+function startMicBar(){
+  if(micBarInt)clearInterval(micBarInt);
+  micBarInt=setInterval(()=>{
+    const v=getMicVol(),pct=Math.min(100,v/128*200);
+    const bar=document.getElementById('mic-bar');
+    bar.style.width=pct+'%';
+    bar.style.background=v>=threshold?'var(--gold)':'var(--teal)';
+  },55);
+}
+
+function stopMicBar(){if(micBarInt){clearInterval(micBarInt);micBarInt=null;}}
+
+function rPickSeq(){
+  const pool=[...CHORDS[rLevel]],seq=[];let li=-1;
+  for(let i=0;i<rCount;i++){let idx;do{idx=Math.floor(Math.random()*pool.length);}while(idx===li&&pool.length>1);seq.push(pool[idx]);li=idx;}
+  return seq;
+}
+
+function rRender(){
+  if(rCurIdx>=rSequence.length)return;
+  const c=rSequence[rCurIdx],el=document.getElementById('r-stage');
+  el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+  el.innerHTML=`<div class="chord-name">${c.name}</div><div class="chord-type">${c.type}</div>${drawDiagram(c)}`;
+}
+
+function rRenderHistory(){document.getElementById('r-history').innerHTML=rHistory.slice(-10).map((c,i,a)=>`<span class="hbadge ${i===a.length-1?'cur':''}">${c}</span>`).join('');}
+
+function rDetectLoop(){
+  if(!rRunning||rDone)return;
+  if(getMicVol()>=threshold&&!rCooldown){
+    rCooldown=true;
+    rHistory.push(rSequence[rCurIdx].name);rRenderHistory();
+    rCurIdx++;document.getElementById('r-progress').textContent=`${rCurIdx} / ${rCount}`;
+    if(rCurIdx>=rCount){rFinish();return;}
+    rRender();playChord(rSequence[rCurIdx].name);
+    setTimeout(()=>{rCooldown=false;},800);
+  }
+  requestAnimationFrame(rDetectLoop);
+}
+
+function rStart(){
+  if(!micConnected){alert('請先連接麥克風！');return;}
+  rSequence=rPickSeq();rCurIdx=0;rHistory=[];rDone=false;rRunning=true;rCooldown=false;
+  document.getElementById('r-start').style.display='none';
+  document.getElementById('r-stop').style.display='';
+  document.getElementById('r-status').textContent='撥弦 → 音量觸發換下一個 ⚡';
+  rStartTime=performance.now();
+  rRender();playChord(rSequence[0].name);
+  document.getElementById('r-progress').textContent=`0 / ${rCount}`;
+  if(rTimerInt)clearInterval(rTimerInt);
+  rTimerInt=setInterval(()=>{if(!rRunning)return;document.getElementById('r-timer').textContent=((performance.now()-rStartTime)/1000).toFixed(1);},100);
+  rDetectLoop();
+}
+
+function rFinish(){
+  rRunning=false;rDone=true;clearInterval(rTimerInt);
+  const elapsed=(performance.now()-rStartTime)/1000,avg=(elapsed/rCount).toFixed(2);
+  if(rBest===null||elapsed<rBest)rBest=elapsed;
+  document.getElementById('r-best').textContent=rBest.toFixed(1);
+  document.getElementById('r-timer').textContent=elapsed.toFixed(1);
+  document.getElementById('r-start').style.display='';
+  document.getElementById('r-stop').style.display='none';
+  document.getElementById('r-status').textContent='完成！再試一次 🏆';
+  document.getElementById('r-stage').innerHTML=`<div class="result-overlay"><div class="result-title">完成</div><div class="result-sub">${rCount} 個和弦換弦</div><div class="result-stats"><div class="rs"><div class="rs-val">${elapsed.toFixed(1)}s</div><div class="rs-lab">總時間</div></div><div class="rs"><div class="rs-val">${avg}s</div><div class="rs-lab">平均每弦</div></div><div class="rs"><div class="rs-val">${rBest.toFixed(1)}s</div><div class="rs-lab">最佳紀錄</div></div></div></div>`;
+}
+
+function rStop(){
+  rRunning=false;rDone=true;clearInterval(rTimerInt);
+  document.getElementById('r-start').style.display='';
+  document.getElementById('r-stop').style.display='none';
+  document.getElementById('r-status').textContent='連接麥克風後開始';
+  document.getElementById('r-stage').innerHTML='<div class="idle-msg">⚡ 準備好了嗎？</div>';
+  document.getElementById('r-timer').textContent='0.0';
+  document.getElementById('r-progress').textContent='0 / '+rCount;
+  rHistory=[];rRenderHistory();
+}
+</script>
+</body>
+</html>
